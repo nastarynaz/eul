@@ -17,6 +17,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var isSleeping = false
     private var updateMethodCancellable: AnyCancellable?
     private var appearanceCancellable: AnyCancellable?
+    private var smcWorkItem: DispatchWorkItem?
+    private var networkWorkItem: DispatchWorkItem?
+    private var updateWorkItem: DispatchWorkItem?
 
     var window: NSWindow!
     @ObservedObject var preferenceStore = SharedStore.preference
@@ -86,6 +89,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func sleep() {
         isSleeping = true
+        smcWorkItem?.cancel()
+        smcWorkItem = nil
+        networkWorkItem?.cancel()
+        networkWorkItem = nil
+        updateWorkItem?.cancel()
+        updateWorkItem = nil
     }
 
     func applicationWillTerminate(_: Notification) {
@@ -115,35 +124,62 @@ extension AppDelegate {
 
 extension AppDelegate {
     func refreshSMCRepeatedly() {
+        smcWorkItem?.cancel()
+        smcWorkItem = nil
+
         guard !isSleeping else {
             return
         }
 
         NotificationCenter.default.post(name: .SMCShouldRefresh, object: nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double(preferenceStore.smcRefreshRate)) { [self] in
-            refreshSMCRepeatedly()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.refreshSMCRepeatedly()
         }
+        smcWorkItem = workItem
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + Double(preferenceStore.smcRefreshRate),
+            execute: workItem
+        )
     }
 
     func refreshNetworkRepeatedly() {
+        networkWorkItem?.cancel()
+        networkWorkItem = nil
+
         guard !isSleeping else {
             return
         }
 
         NotificationCenter.default.post(name: .NetworkShouldRefresh, object: nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double(preferenceStore.networkRefreshRate)) { [self] in
-            refreshNetworkRepeatedly()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.refreshNetworkRepeatedly()
         }
+        networkWorkItem = workItem
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + Double(preferenceStore.networkRefreshRate),
+            execute: workItem
+        )
     }
 
     func checkUpdateRepeatedly() {
+        updateWorkItem?.cancel()
+        updateWorkItem = nil
+
         guard !isSleeping, preferenceStore.upgradeMethod != .none else {
             return
         }
 
         preferenceStore.checkUpdate()
-        DispatchQueue.main.asyncAfter(deadline: .now() + Double(60 * 60)) { [self] in
-            checkUpdateRepeatedly()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.checkUpdateRepeatedly()
         }
+        updateWorkItem = workItem
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + Double(60 * 60),
+            execute: workItem
+        )
     }
 }

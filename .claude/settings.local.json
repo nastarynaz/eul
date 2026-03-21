@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild:*)",
+      "Bash(/Users/xiaobei/Library/Developer/Xcode/DerivedData/eul-fthqqziydluezpevvdfujusdapxb/Build/Products/Debug/eul.app/Contents/MacOS/eul:*)",
+      "Bash(open:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(chmod:*)",
+      "Bash(swift:*)",
+      "Bash(killall:*)",
+      "Bash(sudo powermetrics:*)",
+      "Bash(sysctl:*)",
+      "Bash(/tmp/test_gpu_info.swift)",
+      "Bash(/tmp/test_key_found.swift)",
+      "Bash(/tmp/test_gpu_full.swift)",
+      "Bash(system_profiler:*)",
+      "Bash(/tmp/test_gpu_detection.swift)",
+      "Bash(/tmp/test_gpu_complete.swift)",
+      "Bash(/tmp/scan_all_temps.swift)",
+      "Bash(/tmp/test_gpu_temp_debug.swift)",
+      "Bash(/tmp/scan_gpu_temps.swift)",
+      "Bash(/tmp/test_gpu_temps_read.swift)",
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(for file in Resource/*.lproj/Localizable.strings)",
+      "Bash(do)",
+      "Bash(if ! grep -q \"cpu.up_time_days\" \"$file\")",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(fi)",
+      "Bash(find /Users/xiaobei/Documents/xiaobei/eul/eul -name \"*.swift\" -type f -exec grep -l \"NSNotification.Name\\\\|@Published\" {})"
+    ]
+  }
+}

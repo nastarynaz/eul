@@ -8,6 +8,8 @@
 
 import Foundation
 
+private let shellPipeQueue = DispatchQueue(label: "com.gao.eul.shellPipe", qos: .background)
+
 // https://stackoverflow.com/questions/26971240/how-do-i-run-an-terminal-command-in-a-swift-script-e-g-xcodebuild
 @discardableResult
 func shellData(_ args: [String]) -> Data? {
@@ -103,7 +105,7 @@ func shellPipe(_ args: String..., onData: ((String) -> Void)? = nil, didTerminat
         didTerminate?()
     }
 
-    DispatchQueue(label: "shellPipe-\(UUID().uuidString)", qos: .background, attributes: .concurrent).async {
+    shellPipeQueue.async {
         Print("good to launch")
         do {
             try task.run()

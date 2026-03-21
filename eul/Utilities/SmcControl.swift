@@ -12,6 +12,7 @@ import SwiftyJSON
 
 class SmcControl: Refreshable {
     static var shared = SmcControl()
+    private let smcQueue = DispatchQueue(label: "com.gao.eul.smc", qos: .userInitiated)
 
     var sensors: [TemperatureData] = []
     var fans: [FanData] = []
@@ -94,23 +95,28 @@ class SmcControl: Refreshable {
     }
 
     @objc func refresh() {
-        for sensor in sensors {
-            do {
-                sensor.temp = try SMCKit.temperature(sensor.sensor.code, unit: tempUnit)
-            } catch {
-                sensor.temp = 0
-                print("error while getting temperature", error)
+        smcQueue.async { [self] in
+            for sensor in sensors {
+                do {
+                    sensor.temp = try SMCKit.temperature(sensor.sensor.code, unit: tempUnit)
+                } catch {
+                    sensor.temp = 0
+                    print("error while getting temperature", error)
+                }
+            }
+            let updatedFans = fans.map {
+                FanData(
+                    id: $0.id,
+                    currentSpeed: try? SMCKit.fanCurrentSpeed($0.id),
+                    minSpeed: $0.minSpeed,
+                    maxSpeed: $0.maxSpeed
+                )
+            }
+            DispatchQueue.main.async { [self] in
+                fans = updatedFans
+                NotificationCenter.default.post(name: .StoreShouldRefresh, object: nil)
             }
         }
-        fans = fans.map {
-            FanData(
-                id: $0.id,
-                currentSpeed: try? SMCKit.fanCurrentSpeed($0.id),
-                minSpeed: $0.minSpeed,
-                maxSpeed: $0.maxSpeed
-            )
-        }
-        NotificationCenter.default.post(name: .StoreShouldRefresh, object: nil)
     }
 }
 
