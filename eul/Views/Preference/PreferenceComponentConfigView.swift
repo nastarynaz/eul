@@ -94,6 +94,30 @@ extension Preference {
                             .fixedSize()
                         }
                     }
+                    if config.wrappedValue.component.isGraphAvailable && config.wrappedValue.showGraph {
+                        HStack(spacing: 8) {
+                            Text("Graph Color:")
+                                .inlineSection()
+                            ForEach(GraphColorOption.allCases, id: \.self) { option in
+                                Button(action: {
+                                    componentConfigStore[component].graphColor = option
+                                }) {
+                                    ZStack {
+                                        Circle()
+                                            .fill(option == .monochrome ? Color.text : option.color)
+                                            .frame(width: 16, height: 16)
+                                        if config.wrappedValue.graphColor == option {
+                                            Circle()
+                                                .strokeBorder(Color.primary, lineWidth: 2)
+                                                .frame(width: 20, height: 20)
+                                        }
+                                    }
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .help(option.label)
+                            }
+                        }
+                    }
                     if component == .CPU {
                         ComponentTextConfigView<CpuTextComponent>()
                     }

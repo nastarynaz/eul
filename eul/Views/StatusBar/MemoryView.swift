@@ -42,7 +42,7 @@ struct MemoryView: View {
                     .frame(width: 13, height: 13)
             }
             if config.showGraph {
-                LineChart(points: memoryStore.usageHistory)
+                LineChart(points: memoryStore.usageHistory, color: config.graphColor.color)
             }
             if textStore.showComponents {
                 StatusBarTextView(texts: texts)

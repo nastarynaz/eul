@@ -42,7 +42,7 @@ struct CpuView: View {
                     .frame(width: 13, height: 13)
             }
             if config.showGraph {
-                LineChart(points: cpuStore.usageHistory)
+                LineChart(points: cpuStore.usageHistory, color: config.graphColor.color)
             }
             if textStore.showComponents {
                 StatusBarTextView(texts: texts)

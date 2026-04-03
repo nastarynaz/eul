@@ -7,7 +7,37 @@
 //
 
 import Foundation
+import SharedLibrary
+import SwiftUI
 import SwiftyJSON
+
+enum GraphColorOption: String, CaseIterable, Codable {
+    case monochrome
+    case red
+    case blue
+    case orange
+    case yellow
+
+    var color: Color {
+        switch self {
+        case .monochrome: return .text
+        case .red: return .graphRed
+        case .blue: return .graphBlue
+        case .orange: return .graphOrange
+        case .yellow: return .graphYellow
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .monochrome: return "Monochrome"
+        case .red: return "Red"
+        case .blue: return "Blue"
+        case .orange: return "Orange"
+        case .yellow: return "Yellow"
+        }
+    }
+}
 
 struct EulComponentConfig: Codable {
     var component: EulComponent
@@ -15,6 +45,7 @@ struct EulComponentConfig: Codable {
     var showGraph: Bool = false
     var diskSelection: String = ""
     var networkPortSelection: String = ""
+    var graphColor: GraphColorOption = .monochrome
 
     var json: JSON {
         JSON([
@@ -23,6 +54,7 @@ struct EulComponentConfig: Codable {
             "showGraph": showGraph,
             "diskSelection": diskSelection,
             "networkPortSelection": networkPortSelection,
+            "graphColor": graphColor.rawValue,
         ])
     }
 }
@@ -49,6 +81,10 @@ extension EulComponentConfig {
 
         if let string = json["networkPortSelection"].string {
             networkPortSelection = string
+        }
+
+        if let string = json["graphColor"].string, let option = GraphColorOption(rawValue: string) {
+            graphColor = option
         }
     }
 }

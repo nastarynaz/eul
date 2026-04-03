@@ -101,7 +101,12 @@ class SmcControl: Refreshable {
                     sensor.temp = try SMCKit.temperature(sensor.sensor.code, unit: tempUnit)
                 } catch {
                     sensor.temp = 0
-                    print("error while getting temperature", error)
+                    // SMCResult 135 is a type mismatch (e.g. FLT vs SP78 on Apple Silicon)
+                    // This is handled gracefully by the FLT fallback in SMCKit — suppress noise
+                    let errorString = "\(error)"
+                    if !errorString.contains("SMCResult: 135") {
+                        print("error while getting temperature", error)
+                    }
                 }
             }
             let updatedFans = fans.map {

@@ -36,7 +36,7 @@ struct GpuView: View {
                     .frame(width: 13, height: 13)
             }
             if config.showGraph {
-                LineChart(points: gpuStore.usageHistory)
+                LineChart(points: gpuStore.usageHistory, color: config.graphColor.color)
             }
             if textStore.showComponents {
                 StatusBarTextView(texts: texts)

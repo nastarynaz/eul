@@ -18,6 +18,7 @@ struct LineChart: View {
     var maximumPoint: Double = 100
     var minimumPoint: Double = 0
     var frame = CGSize(width: (AppDelegate.statusBarHeight - 4) * 1.75, height: AppDelegate.statusBarHeight - 4)
+    var color: Color = .text
 
     var stepX: CGFloat {
         frame.width / (CGFloat(maxPointCount) - 1)
@@ -74,9 +75,9 @@ struct LineChart: View {
         ZStack {
             Group {
                 closedPath()
-                    .fill(Color.text)
+                    .fill(color.opacity(0.5))
                 path()
-                    .stroke(Color.text, style: StrokeStyle(lineWidth: LineChart.minimumLineHeight, lineJoin: .round))
+                    .stroke(color, style: StrokeStyle(lineWidth: LineChart.minimumLineHeight, lineJoin: .round))
             }
             .rotationEffect(.degrees(180), anchor: .center)
             .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
