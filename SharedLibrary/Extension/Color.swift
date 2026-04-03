@@ -39,4 +39,10 @@ public extension Color {
     static let shadow = Color(NSColor.shadowColor)
     static let separator = Color(NSColor.separatorColor)
     static let thirdary = Color.secondary.opacity(0.7)
+    
+    // Graph Bar Colors
+    static let graphRed = Color(hex: "e03a3e")
+    static let graphBlue = Color(hex: "009ddc")
+    static let graphOrange = Color(hex: "f6821f")
+    static let graphYellow = Color(hex: "fcb827")
 }
